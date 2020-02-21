@@ -135,7 +135,7 @@ public class Provider8001 {
                     <artifactId>maven-resources-plugin</artifactId>
                     <configuration>
                         <delimiters>
-                            <delimit>$</delimit>
+                            <delimiter>$</delimiter>
                         </delimiters>
                     </configuration>
                 </plugin>

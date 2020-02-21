@@ -16,5 +16,5 @@ eureka:
 
 info:
   app.name: com.xyz.microservice
-  build.artifactId: $project.artifactId$ # todo project.artifactId和project.version不能解析
+  build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
   build.version: $project.version$
