@@ -1,2 +1,20 @@
 server:
   port: 8001
+
+spring:
+  application:
+    name: microservice-provider   #微服务名称
+
+
+eureka:
+  client:
+    service-url:  #注册中心地址列表
+      defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: micoroserviceprovider8001  # 自定义控制台中微服务名称
+    prefer-ip-address: true  #eureka控制访问路径显示ip
+
+info:
+  app.name: com.xyz.microservice
+  build.artifactId: $project.artifactId$ # todo project.artifactId和project.version不能解析
+  build.version: $project.version$

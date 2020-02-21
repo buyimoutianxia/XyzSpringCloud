@@ -19,11 +19,21 @@
             <version>${project.version}</version>
         </dependency>
 
-        <!--todo dependencyMangement失效-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-<!--            <version>2.2.2.RELEASE</version>-->
+        </dependency>
+
+        <!--eureka client  将provider服务注册进 eureka server端-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <!--解决eureka控制台中微服务info信息-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!--热启动-->
@@ -31,11 +41,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework</groupId>-->
-<!--            <artifactId>springloaded</artifactId>-->
-<!--            <version>1.2.8.RELEASE</version>-->
-<!--        </dependency>-->
+
 
     </dependencies>
 
