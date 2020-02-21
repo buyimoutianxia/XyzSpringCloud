@@ -150,3 +150,17 @@ public class Provider8001 {
         build.version: $project.version$
     ```
 ### eureka自我保护机制
+* 某一时刻，某个微服务不可用时，eureka不会立刻清理，依旧会对该微服务的信息进行保存
+* 默认情况下，如果eureka server在一定时间内没有接收到每个微服务实例的心跳，eureka server将会注销该实例。
+* 当网络分区故障发生时，微服务与eureka server之间无法正常通信，以上行为可能变得非常危险了，因为微服务本身其实是健康的，此时本不应该注销这个微服务。eureka通过“自我保护模式来解决这个问题”。
+* 在自我保护模式中，eureka server会保护服务注册表中的信息，不再注销任何服务实例。当它收到的心跳数重新恢复到阀值以上时，该eureka server节点就会自动退出自我保护模式。
+* 禁用自我保护模式
+  1. 可以在eureka的server端的application.yml中禁用自我保护
+  2. eureka.server.enable-self-preservation=false
+
+### 服务发现
+
+服务provider中增加@EnableDiscovery注解
+
+### eureka server的集群配置
+
