@@ -9,7 +9,8 @@ spring:
 eureka:
   client:
     service-url:  #注册中心地址列表
-      defaultZone: http://localhost:7001/eureka
+#      defaultZone: http://localhost:7001/eureka/  #单机注册地址
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
   instance:
     instance-id: micoroserviceprovider8001  # 自定义控制台中微服务名称
     prefer-ip-address: true  #eureka控制访问路径显示ip

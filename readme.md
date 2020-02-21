@@ -110,7 +110,6 @@ public class Provider8001 {
        instance-id: micoroserviceprovider8001  # 自定义控制台中微服务名称
        prefer-ip-address: true  #eureka控制访问路径显示ip 
     ```
-
 3. 控制微服务Info内容修改
 * provider8001的pom.xml
   ```yaml
@@ -163,4 +162,59 @@ public class Provider8001 {
 服务provider中增加@EnableDiscovery注解
 
 ### eureka server的集群配置
-
+1. 增加2个module，eurekaserver-7002和eurekaserver-7003,并配置到父工程的pom中
+2. windows在`C:\Windows\System32\drivers\etc\hosts`文件中增加配置(切记需要增加，否则在7001的控制台看不到7002和7003的集群配置，7002和7003类似)
+    ```text
+    127.0.0.1 server7001
+    127.0.0.1 server7002
+    127.0.0.1 server7003
+    ```
+3. 在eurekaserver-7001的application.yml中修改
+   eureka.instance.hostname和eureka.client.service-url.defaultZone标签
+    ```yaml
+     eureka:
+       instance:
+         hostname: server7001 #eureka服务端的实例名称
+       client:
+         register-with-eureka: false # false表示不向注册中心注册自己
+         fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
+         service-url:
+     #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
+           defaultZone: http://server7002:7002/eureka/,http://server7003:7003/eureka/  #eureka server集群配置
+    ```
+ 
+4. 在eurekaserver-7002的application.yml中修改
+   eureka.instance.hostname和eureka.client.service-url.defaultZone标签
+    ```yaml
+    eureka:
+      instance:
+        hostname: server7002 #eureka服务端的实例名称
+      client:
+        register-with-eureka: false # false表示不向注册中心注册自己
+        fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
+        service-url:
+    #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
+          defaultZone: http://server7001:7001/eureka/,http://server7003:7003/eureka/ #eureka server集群配置
+    ```
+5. 在eurekaserver-7003的application.yml中修改
+   eureka.instance.hostname和eureka.client.service-url.defaultZone标签 
+   ```yaml
+    eureka:
+      instance:
+        hostname: server7003 #eureka服务端的实例名称
+      client:
+        register-with-eureka: false # false表示不向注册中心注册自己
+        fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
+        service-url:
+    #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
+          defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/ #eureka server集群配置
+   ```
+6. provider8001的application.yml中注册地址改为多个
+    eureka.client.service-url.defaultZone标签
+    ```yaml
+     eureka:
+       client:
+         service-url:  #注册中心地址列表
+     #      defaultZone: http://localhost:7001/eureka/  #单机注册地址
+           defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+    ```
