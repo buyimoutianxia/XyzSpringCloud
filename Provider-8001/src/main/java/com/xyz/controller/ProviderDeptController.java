@@ -20,7 +20,6 @@ public class ProviderDeptController {
 
     @RequestMapping("/provider/list")
     public Dept list() {
-//        System.out.println("hello");
         return providerDeptService.list();
     }
 

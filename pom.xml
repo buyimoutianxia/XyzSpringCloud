@@ -13,6 +13,7 @@
         <module>Common-APIs</module>
         <module>Provider-8001</module>
         <module>Consumer-9001</module>
+        <module>EurekaServer-7001</module>
     </modules>
 
     <properties>
