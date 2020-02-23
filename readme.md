@@ -86,7 +86,7 @@ public class Provider8001 {
 
 ```
 
-### eureka控制完善
+### eureka控制台完善
 1. 控制台服务名称修改
    增加eureka.instance.instace-id标签
 
@@ -218,3 +218,127 @@ public class Provider8001 {
      #      defaultZone: http://localhost:7001/eureka/  #单机注册地址
            defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
     ```
+    
+### eureka与ZK比较
+|  |  Eureka |  ZK |
+| ---- | ---- | ---
+|CAP原则| AP | CP|
+
+
+## Ribbon
+客户端 负载均衡工具
+### Ribbon配置
+1. provider8001复制一份provider8002,使provider的微服务有多个实例（需要注意的是，application.yml中的instance_id需要修改)
+2. comsumer的pom文件中增加配置
+    ```yaml
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
+            </dependency>
+    
+            <!--解决eureka控制台中的info页面错误问题-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+            </dependency>
+    ```
+3. consumer的application.yml中增加微服务的配置
+   ```yaml
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+      instance:
+        instance-id: microserviceconsumer9001
+        prefer-ip-address: true
+    
+    
+    spring:
+      application:
+        name: microservice-consumer
+    
+    #解决eureka控制台中的Info页面错误问题
+    info:
+      app.name: com.xyz.microservice
+      build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+      build.version: $project.version$
+   ```
+
+4.  consumer的restTemplate bean中增加@LoadBalanced注解
+    ```java
+    @Configuration
+    public class Config {
+
+        @Bean
+        @LoadBalanced //ribbon基于客户端的负载均衡工具
+        public RestTemplate myRestTemplate() {
+            return new RestTemplate();
+        }
+    }
+    ```
+
+5.  consumer的主配置类上增加@EnableEurakeClient注解
+     ```java
+     @SpringBootApplication
+     @EnableEurekaClient
+     public class Consumer9001 {
+     
+         public static void main(String[] args) {
+             SpringApplication.run(Consumer9001.class, args);
+         }
+     }
+     ```
+
+6.  consumer的controller中请求地址从地址+端口改为微服务名称
+    ```java
+    //    private static final String  REST_URL_PREFIX = "http://localhost:8001";
+        /**
+         * ribbon使用微服务名称调用
+         */
+        private static final String  REST_URL_PREFIX = "http://microservice-provider";
+    ```
+7. consumer的请求地址：
+`http://localhost:9001/consumer/list`
+实现consumer请求provider的负载均衡
+
+ribbon与eureka整合后，可以直接调用微服务，而不用关心地址和端口
+Ribbon是软负载均衡的客户端组件，可以和其他请求的客户端结合使用，与eureka结合只是其中一个示例
+
+### Ribbon核心组件IRule
+ribbon提供的负载均衡算法
+
+| 算法名称|  算法说明|
+|---- | ----|
+|RoundRibbonRule  | |
+|RandomRule  | |
+|AvailiabilityFilteringRule  | |
+|WeightedResonseTimeRule  | |
+|RetryRule  | |
+|BestAvailiableRule  | |
+|ZoneAdvoidaneRule  | |
+
+### ribbon修改默认算法
+在com.xyz.bean.Config中bean
+
+```java
+    /**
+     * @author xyz
+     * @date 2020年2月23日
+     * @decription 修改ribbon默认算法
+     */
+    @Bean
+    public IRule myRule() {
+        return new RandomRule();
+    }
+```
+
+
+### ribbon自定义算法
+todo
+
+

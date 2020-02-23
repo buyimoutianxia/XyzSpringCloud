@@ -15,7 +15,11 @@ import org.springframework.web.client.RestTemplate;
 @RestController
 public class ConsumerDeptController {
 
-    private static final String  REST_URL_PREFIX = "http://localhost:8001";
+//    private static final String  REST_URL_PREFIX = "http://localhost:8001";
+    /**
+     * ribbon使用微服务名称调用
+     */
+    private static final String  REST_URL_PREFIX = "http://microservice-provider";
 
     /**
      * 客户端的http请求抽象类,用于访问restful接口

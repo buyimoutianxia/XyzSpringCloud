@@ -14,13 +14,13 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 @SpringBootApplication
 /**
  * @author xyz
- * @date 2020年2月21日
+ * @date 2020年2月23日
  * eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
  */
 @EnableEurekaClient
-public class Provider8001 {
+public class Provider8002 {
 
     public static void main(String[] args) {
-        SpringApplication.run(Provider8001.class, args);
+        SpringApplication.run(Provider8002.class, args);
     }
 }

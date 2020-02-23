@@ -9,11 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Consumer-9001</artifactId>
-    <description>服务消费者</description>
+    <artifactId>provider-8002</artifactId>
+    <description>服务提供者</description>
 
     <dependencies>
-
         <dependency>
             <groupId>com.xyz</groupId>
             <artifactId>Common-APIs</artifactId>
@@ -21,26 +20,23 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!--eureka client  将provider服务注册进 eureka server端-->
+        <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-ribbon</artifactId>
-        </dependency>
-
-        <!--解决eureka控制台中的info页面错误问题-->
+        <!--解决eureka控制台中微服务info信息-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-
+        <!--热启动-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -48,5 +44,6 @@
 
 
     </dependencies>
+
 
 </project>

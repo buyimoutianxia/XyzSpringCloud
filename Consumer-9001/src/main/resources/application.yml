@@ -1,2 +1,22 @@
 server:
     port: 9001
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+  instance:
+    instance-id: microserviceconsumer9001
+    prefer-ip-address: true
+
+
+spring:
+  application:
+    name: microservice-consumer
+
+#解决eureka控制台中的Info页面错误问题
+info:
+  app.name: com.xyz.microservice
+  build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+  build.version: $project.version$
