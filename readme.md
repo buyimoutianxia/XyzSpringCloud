@@ -342,3 +342,170 @@ ribbon提供的负载均衡算法
 todo
 
 
+## Feign
+声明式的webservice注解，面向接口开发。feign集成了ribbon
+使用过程，创建1个接口，在上面增加注解即可
+### Feign配置过程
+1. 在common-apis项目中增加com.xyz.service.DeptService接口，采用接口+注解的方式配置feign客户端调用(需要在pom中增加对feign的支持)
+    ```java
+    package com.xyz.service;
+    
+    import com.xyz.entity.Dept;
+    import org.springframework.cloud.openfeign.FeignClient;
+    import org.springframework.stereotype.Service;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    
+    /**
+     * @author xyz
+     * @date 2020年2月24日
+     * @decription feign调用的客户端接口
+     */
+    @FeignClient(value = "microservice-provider")
+    @Service
+    public interface DeptService {
+    
+        @RequestMapping("/provider/list")
+        Dept list();
+    
+    }
+
+    ```
+2. 创建consumerfeign-9101 module，创建pom文件
+
+    ```yaml
+    <?xml version="1.0" encoding="UTF-8"?>
+    <project xmlns="http://maven.apache.org/POM/4.0.0"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+        <parent>
+            <artifactId>XyzSpringCloud-Finchley</artifactId>
+            <groupId>com.xyz</groupId>
+            <version>1.0-SNAPSHOT</version>
+        </parent>
+        <modelVersion>4.0.0</modelVersion>
+    
+        <artifactId>ConsumerFeign-9101</artifactId>
+    
+        <dependencies>
+    
+            <dependency>
+                <groupId>com.xyz</groupId>
+                <artifactId>Common-APIs</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+    
+            <!--eureka client-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+            </dependency>
+    
+            <!--feign-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-actuator</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+            </dependency>
+    
+        </dependencies>
+    
+    </project>
+    ```
+3. consumerfeign-9101创建application.yml文件
+    ```yaml
+    server:
+        port: 9101
+    
+    
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+      instance:
+        instance-id: microserviceconsumerfeign9101
+        prefer-ip-address: true
+    
+    
+    spring:
+      application:
+        name: microservice-consumerfeign
+    
+    #解决eureka控制台中的Info页面错误问题
+    info:
+      app.name: com.xyz.microservice
+      build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+      build.version: $project.version$
+    ``` 
+
+3. consumerfeign-9101 中增加com.xyz.controller.ConsumerFeign方法，实现对feign客户端的调用
+    ```java
+    package com.xyz.controller;
+    
+    
+    import com.xyz.entity.Dept;
+    import com.xyz.service.DeptService;
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.web.bind.annotation.RequestMapping;
+    import org.springframework.web.bind.annotation.RestController;
+    
+    
+    /**
+     * @author xyz
+     * @date 2020年2月24日
+     * @description feign调用的controller层
+     */
+    @RestController
+    public class ConsumerFeign {
+    
+        @Autowired
+        private DeptService deptService;
+    
+        @RequestMapping("/consumerfeign/list")
+        public Dept list() {
+            return deptService.list();
+        }
+    }
+
+    ```
+4. consumerfeign-9101主启动类开启对feign的支持
+    ```java
+    package com.xyz;
+    
+    import org.springframework.boot.SpringApplication;
+    import org.springframework.boot.autoconfigure.SpringBootApplication;
+    import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+    import org.springframework.cloud.openfeign.EnableFeignClients;
+    
+    @SpringBootApplication
+    @EnableEurekaClient
+    /**
+     * 开启client端对feign的调用
+     */
+    @EnableFeignClients
+    public class ConsumerFeign9101 {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(ConsumerFeign9101.class, args);
+        }
+    }
+
+    ```
+5. 访问地址
+    `http://localhost:9101/consumerfeign/list`    
+
+6. feign集成了ribbon，因此也可以修改默认的算法，代码通ribbon，在
+   `com.xyz.bean.Config`类中引用别的算法

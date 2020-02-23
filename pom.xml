@@ -17,6 +17,7 @@
         <module>EurekaServer-7001</module>
         <module>EurekaServer-7002</module>
         <module>EurekaServer-7003</module>
+        <module>ConsumerFeign-9101</module>
     </modules>
 
     <properties>
