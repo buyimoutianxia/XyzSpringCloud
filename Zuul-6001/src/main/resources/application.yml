@@ -19,6 +19,7 @@ info:
 spring:
   application:
     name: microservicezuul
+
 zuul:
   routes:
     mydept.serviceId: microservice-provider  #原服务名称
