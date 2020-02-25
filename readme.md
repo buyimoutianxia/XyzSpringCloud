@@ -567,8 +567,44 @@ todo
 ### 服务降级（Feign+Hystrix）
 服务降级是在客户端完成的，与服务端无关
 当服务被熔断后，服务将不再被调用，客户端准备一个fallback的回调，返回缺省值
+1. 修改com.xyz.service.DeptService接口，支持fallback
+    ```java
+    @FeignClient(value = "microservice-provider", fallbackFactory = DeptServcieFallBackFactory.class)
+    @Service
+    public interface DeptService {
+    
+        @RequestMapping("/provider/list")
+        Dept list();
+    
+    }
 
+    ```
+2. 增加fallbackfactory类com.xyz.fallback.DeptServcieFallBackFactory
+    ```java
+    @Component
+    public class DeptServcieFallBackFactory implements FallbackFactory<DeptService> {
+    
+        @Override
+        public DeptService create(Throwable throwable) {
+            return new DeptService() {
+                @Override
+                public Dept list() {
+                    return new Dept().setDeptNo(9999)
+                                     .setDeptName("fallbackfactory_name")
+                                     .setDeptDesc("fackbackfacotry_desc");
+                }
+            };
+        }
+    }
 
+    ```
+3. 修改consumerFeign-9101项目，在feign中开启hystrix
+    ```yaml
+    #在Feign中开发Hystrix
+    feign:
+      hystrix:
+        enabled: true
+    ```
 
 ### 服务监控HystrixDashBoard
 

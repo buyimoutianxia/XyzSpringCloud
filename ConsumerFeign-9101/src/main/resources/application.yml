@@ -11,6 +11,11 @@ eureka:
     prefer-ip-address: true
 
 
+#在Feign中开发Hystrix
+feign:
+  hystrix:
+    enabled: true
+
 spring:
   application:
     name: microservice-consumerfeign
