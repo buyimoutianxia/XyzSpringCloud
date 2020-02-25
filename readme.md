@@ -507,5 +507,69 @@ todo
 5. 访问地址
     `http://localhost:9101/consumerfeign/list`    
 
-6. feign集成了ribbon，因此也可以修改默认的算法，代码通ribbon，在
+6. feign集成了ribbon，因此也可以修改默认的算法，代码同ribbon，在
    `com.xyz.bean.Config`类中引用别的算法
+ 
+## Hystrix
+扇出  雪崩
+较低级别的服务中的服务故障可能导致用户级联故障。当对特定服务的呼叫达到一定阈值时（Hystrix中的默认值为5秒内的20次故障), Hystrix能够保证在一个依赖故障的情况下，不会导致整体服务失败，避免级联故障，提高分布式系统的弹性
+当某个服务故障之后，通过断路器的故障监控，向调用方返回一个符合预期的、可处理的响应（fallback)，而不是长时间的等待或者抛出方法无法处理的异常，保证服务调用方的线程不会被长时间、不必要的占用，避免了故障在系统中蔓延，乃至雪崩
+
+### 服务熔断
+服务故障或者异常，当某个异常条件被触发，直接熔断整个服务，而不是一直等到此服务超时
+1. 新建module ProviderHystrix-8101
+2. 复制provider-8001的代码和配置文件
+3. 修改com.xyz.controller.ProviderDeptController.list方法
+    ```java
+        /**
+         * @HystrixCommand 调用list方法失败并抛出异常后，会自动调用@HystrixCommand中faccbackMethod指定的方法
+         */
+        @RequestMapping("/provider/list")
+        @HystrixCommand(fallbackMethod = "processHystrix")
+        public Dept list() {
+            /**
+             * return providerDeptService.list();
+             */
+            throw new RuntimeException("没有对应信息");
+        }
+    ```
+4. 配置对应发fallback方法，com.xyz.controller.ProviderDeptController.processHystrix
+    ```java
+        public Dept processHystrix() {
+            return new Dept().setDeptNo(8101)
+                             .setDeptName("providerHystrix_8101")
+                             .setDeptDesc("Hystrix_desc_8101");
+        }
+
+    ```
+5. 修改application.yml配置文件的eureka.instance.instancd_id为MicoroServiceProviderHystrix8101
+6. 主启动类上增加注解@EnableCircuitBreaker
+    ```java
+    /**
+     * @author xyz
+     * @date 2020年2月20日
+     * @description todo
+     * @EnableEurekaClient  eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
+     * @EnableCircuitBreaker 开启对Hystrix熔断器的支持
+     */
+    @SpringBootApplication
+    @EnableEurekaClient
+    @EnableCircuitBreaker
+    public class ProviderHystrix8101 {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(ProviderHystrix8101.class, args);
+        }
+    }
+    ```
+7. 通过feign访问地址：`http://localhost:9101/consumerfeign/list`
+
+### 服务降级（Feign+Hystrix）
+服务降级是在客户端完成的，与服务端无关
+当服务被熔断后，服务将不再被调用，客户端准备一个fallback的回调，返回缺省值
+
+
+
+### 服务监控HystrixDashBoard
+
+

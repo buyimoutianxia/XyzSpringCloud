@@ -1,0 +1,23 @@
+server:
+  port: 8101
+
+spring:
+  application:
+    name: microservice-provider   #微服务名称,多个微服务需要设置一致
+
+
+#eureka注册信息
+eureka:
+  client:
+    service-url:  #注册中心地址列表
+#      defaultZone: http://localhost:7001/eureka/  #单机注册地址
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+  instance:
+    instance-id: MicoroServiceProviderHystrix8101  # 自定义控制台中微服务名称,多个微服务设置不同，区别同一微服务的多个实例
+    prefer-ip-address: true  #eureka控制访问路径显示ip
+
+#解决eureka控制台中的Info页面错误问题
+info:
+  app.name: com.xyz.microservice
+  build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+  build.version: $project.version$
