@@ -605,7 +605,67 @@ todo
       hystrix:
         enabled: true
     ```
+4. provider服务手工关闭，验证hystrix熔断
+
 
 ### 服务监控HystrixDashBoard
 
 
+## Zuul
+实现路由+过滤+代理
+* Zuul访问基本配置
+1. 创建module Zuul-6001
+2. 配置application.yml将Zuul注册到eureka
+    ```yaml
+    server:
+      port: 6001
+    
+    eureka:
+      instance:
+        instance-id: Zuul-6001
+        prefer-ip-address: true
+      client:
+        service-url:
+          defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+    
+    
+      #解决eureka控制台中的Info页面错误问题
+    info:
+      app.name: com.xyz.microservice
+      build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+      build.version: $project.version$
+    
+    spring:
+      application:
+        name: microservicezuul
+
+    ```
+2. 在主启动类中增加对Zuul开启的配置
+    ```java
+    @SpringBootApplication
+    @EnableZuulProxy
+    public class Zuul6001 {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(Zuul6001.class, args);
+        }
+    }
+
+    ```
+3. 通过路由访问`http://localhost:6001/microservice-provider/provider/list`
+
+* Zuul路由访问映射规则(application.yml中增加配置)
+1. 对微服务名称增加映射地址`http://loclalhost:6001/mydept/provider/list`
+2. 禁止原微服务地址访问，只能通过映射地址访问
+3. 增加访问前缀`http://localhost:6001/xyz/mydept/provider/list`
+    ```yaml
+    zuul:
+      routes:
+        mydept.serviceId: microservice-provider  #原服务名称
+        mydept.path: /mydept/**   #映射后的路径
+      ignored-services: "*" #禁止所有的服务通过原路径访问
+      #  ignored-services: microservice-provider #禁止通过原路径访问
+      prefix: /xyz #增加统一的访问前缀
+    ```
+
+## Config

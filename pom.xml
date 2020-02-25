@@ -19,6 +19,7 @@
         <module>EurekaServer-7003</module>
         <module>ConsumerFeign-9101</module>
         <module>ProviderHystrix-8101</module>
+        <module>Zuul-6001</module>
     </modules>
 
     <properties>
