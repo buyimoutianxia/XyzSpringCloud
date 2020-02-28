@@ -19,9 +19,12 @@ public class ClientController {
     @Value("${spring.application.name}")
     private String name;
 
+    @Value("${my.desc}")
+    private String desc;
+
     @RequestMapping("/config/client")
     public String rest() {
-        return  "port:" + port + " ,name:" + name ;
+        return  "port:" + port + " ,name:" + name + " ,desc:" + desc;
     }
 
 

@@ -670,6 +670,34 @@ todo
 
 ## Config
 ### Config Server
+0. 在github中创建配置文件
+    ```yaml
+    spring:
+      profiles:
+        active:
+        - dev
+    
+    ---
+    server:
+      port: 8888
+    spring:
+      profiles: dev
+      application:
+        name: microserviceconfig-dev
+    my:
+      desc: desc-dev
+    ---
+    server:
+      port: 9999
+    spring:
+      profiles: test
+      application:
+        name: microserviceconfig-test
+    my:
+      desc: desc-test
+    ```
+    重点说明：不允许中在已有的标签下面自定义标签，如：`spring.application.desc`
+             单可以从顶级开始自定义标签，如：`my.desc`
 1. 创建module ConfigServer-5001
 2. 新建application.yml,配置git中的配置文件信息
     ```yaml
@@ -798,3 +826,5 @@ todo
     ```
 6. dev访问路径:`http://localhost:8888/config/client`
    test访问路径:`http://localhost:9999/config/client`
+
+7. 项目只有在启动的时候才会获取配置文件的值，修改github信息后，client端并没有在次去获取
