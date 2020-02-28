@@ -1,0 +1,10 @@
+server:
+  port: 5001
+spring:
+  application:
+    name: microserver-config
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/buyimoutianxia/microservicerconfig.git

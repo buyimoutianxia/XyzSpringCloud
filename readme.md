@@ -669,3 +669,132 @@ todo
     ```
 
 ## Config
+### Config Server
+1. 创建module ConfigServer-5001
+2. 新建application.yml,配置git中的配置文件信息
+    ```yaml
+    server:
+      port: 5001
+    spring:
+      application:
+        name: microserver-config
+      cloud:
+        config:
+          server:
+            git:
+              uri: https://github.com/buyimoutianxia/microservicerconfig.git
+    ```
+ 
+3. pom中增加对ConfigServer的jar包支持
+    ```xml
+        <dependencies>
+    
+            <!--SpringCloud 配置中心-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-server</artifactId>
+            </dependency>
+    
+            <!--热启动-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <optional>true</optional>
+            </dependency>
+    
+        </dependencies>
+    ``` 
+4. 新建主启动类,开启对配置中心的支持注解@EnableConfigServer
+    ```java
+    @SpringBootApplication
+    @EnableConfigServer
+    public class ConfigServer5001 {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(ConfigServer5001.class, args);
+        }
+    }
+
+    ```
+5. 启动服务，访问路径获取配置信息`http://localhost:5001/application-dev.yml`或者`http://localhost:5001/application/dev`
+访问方式如下：
+
+| 序号| 访问路径|
+| ----| ---- |
+|1 | /{application}/{profile}[/{label}] | 
+| 2 |/{application}-{profile}.yml |
+|3 | /{label}/{application}-{profile}.yml |
+|4 |/{application}-{profile}.properties |
+|5 |/{label}/{application}-{profile}.properties |
+
+### Config Client
+
+1. 新建 module ConfigClient
+2. pom中增加对配置中心client端的jar支持
+    ```xml
+        <dependencies>
+    
+            <!--SpringCloud Config 客户端-->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-config</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+            </dependency>
+    
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-devtools</artifactId>
+                <optional>true</optional>
+            </dependency>
+        </dependencies>
+    ```
+3. 新建bootstrap.yml（bootstrap.yml 系统级的配置文件，优先级高; application.yml 是用户级别的配置文件）
+    ```yaml
+    spring:
+      cloud:
+        config:
+          name: application   #从github上获取的资源名称，没有yml后缀
+          profile: test #访问的配置项
+          label: master  #访问的分支
+          uri: http://localhost:5001   #SpringCloud Config Server端的地址
+
+    ```
+4. 创建rest访问类`com.xyz.configclient.controller.ClientController`
+    ```java
+    @RestController
+    public class ClientController {
+    
+        @Value("${server.port}")
+        private int port;
+    
+        @Value("${spring.application.name}")
+        private String name;
+    
+    //    @Value("${spring.application.desc}")
+    //    private String desc;
+    
+        @RequestMapping("/config/client")
+        public String rest() {
+            return  "port:" + port + " ,name:" + name ;
+        }
+    
+    
+    }
+
+    ```
+5. 启动类
+    ```java
+    @SpringBootApplication
+    public class ConfigClient5002 {
+    
+        public static void main(String[] args) {
+            SpringApplication.run(ConfigClient5002.class, args);
+        }
+    }
+    ```
+6. dev访问路径:`http://localhost:8888/config/client`
+   test访问路径:`http://localhost:9999/config/client`

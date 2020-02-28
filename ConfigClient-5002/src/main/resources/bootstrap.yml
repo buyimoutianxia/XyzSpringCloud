@@ -1,0 +1,7 @@
+spring:
+  cloud:
+    config:
+      name: application   #从github上获取的资源名称，没有yml后缀
+      profile: test #访问的配置项
+      label: master  #访问的分支
+      uri: http://localhost:5001   #SpringCloud Config Server端的地址
