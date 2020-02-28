@@ -80,6 +80,14 @@
                     </delimiters>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!--如果不增加fork配置，devtools不会生效-->
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
