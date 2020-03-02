@@ -1,6 +1,5 @@
-# SpringCloud
 
-## Eureka
+> # Eureka
 ## eureka server
 *  pom.xml
 ```yaml
@@ -43,7 +42,7 @@ public class EureKaServer7001 {
 }
 ```
 
-### eureka client
+## eureka client
 * pom.xml
 ```yaml
         <!--eureka client  将provider服务注册进 eureka server端-->
@@ -86,7 +85,7 @@ public class Provider8001 {
 
 ```
 
-### eureka控制台完善
+## eureka控制台完善
 1. 控制台服务名称修改
    增加eureka.instance.instace-id标签
 
@@ -148,7 +147,7 @@ public class Provider8001 {
         build.artifactId: $project.artifactId$
         build.version: $project.version$
     ```
-### eureka自我保护机制
+## eureka自我保护机制
 * 某一时刻，某个微服务不可用时，eureka不会立刻清理，依旧会对该微服务的信息进行保存
 * 默认情况下，如果eureka server在一定时间内没有接收到每个微服务实例的心跳，eureka server将会注销该实例。
 * 当网络分区故障发生时，微服务与eureka server之间无法正常通信，以上行为可能变得非常危险了，因为微服务本身其实是健康的，此时本不应该注销这个微服务。eureka通过“自我保护模式来解决这个问题”。
@@ -157,11 +156,11 @@ public class Provider8001 {
   1. 可以在eureka的server端的application.yml中禁用自我保护
   2. eureka.server.enable-self-preservation=false
 
-### 服务发现
+## 服务发现
 
 服务provider中增加@EnableDiscovery注解
 
-### eureka server的集群配置
+## eureka server的集群配置
 1. 增加2个module，eurekaserver-7002和eurekaserver-7003,并配置到父工程的pom中
 2. windows在`C:\Windows\System32\drivers\etc\hosts`文件中增加配置(切记需要增加，否则在7001的控制台看不到7002和7003的集群配置，7002和7003类似)
     ```text
@@ -219,15 +218,15 @@ public class Provider8001 {
            defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
     ```
     
-### eureka与ZK比较
+## eureka与ZK比较
 |  |  Eureka |  ZK |
 | ---- | ---- | ---
 |CAP原则| AP | CP|
 
 
-## Ribbon
+> # Ribbon
 客户端 负载均衡工具
-### Ribbon配置
+## Ribbon配置
 1. provider8001复制一份provider8002,使provider的微服务有多个实例（需要注意的是，application.yml中的instance_id需要修改)
 2. comsumer的pom文件中增加配置
     ```yaml
@@ -309,7 +308,7 @@ public class Provider8001 {
 ribbon与eureka整合后，可以直接调用微服务，而不用关心地址和端口
 Ribbon是软负载均衡的客户端组件，可以和其他请求的客户端结合使用，与eureka结合只是其中一个示例
 
-### Ribbon核心组件IRule
+## Ribbon核心组件IRule
 ribbon提供的负载均衡算法
 
 | 算法名称|  算法说明|
@@ -322,7 +321,7 @@ ribbon提供的负载均衡算法
 |BestAvailiableRule  | |
 |ZoneAdvoidaneRule  | |
 
-### ribbon修改默认算法
+## ribbon修改默认算法
 在com.xyz.bean.Config中bean
 
 ```java
@@ -338,14 +337,14 @@ ribbon提供的负载均衡算法
 ```
 
 
-### ribbon自定义算法
+## ribbon自定义算法
 todo
 
 
-## Feign
+> # Feign
 声明式的webservice注解，面向接口开发。feign集成了ribbon
 使用过程，创建1个接口，在上面增加注解即可
-### Feign配置过程
+## Feign配置过程
 1. 在common-apis项目中增加com.xyz.service.DeptService接口，采用接口+注解的方式配置feign客户端调用(需要在pom中增加对feign的支持)
     ```java
     package com.xyz.service;
@@ -510,12 +509,12 @@ todo
 6. feign集成了ribbon，因此也可以修改默认的算法，代码同ribbon，在
    `com.xyz.bean.Config`类中引用别的算法
  
-## Hystrix
+># Hystrix
 扇出  雪崩
 较低级别的服务中的服务故障可能导致用户级联故障。当对特定服务的呼叫达到一定阈值时（Hystrix中的默认值为5秒内的20次故障), Hystrix能够保证在一个依赖故障的情况下，不会导致整体服务失败，避免级联故障，提高分布式系统的弹性
 当某个服务故障之后，通过断路器的故障监控，向调用方返回一个符合预期的、可处理的响应（fallback)，而不是长时间的等待或者抛出方法无法处理的异常，保证服务调用方的线程不会被长时间、不必要的占用，避免了故障在系统中蔓延，乃至雪崩
 
-### 服务熔断
+## 服务熔断
 服务故障或者异常，当某个异常条件被触发，直接熔断整个服务，而不是一直等到此服务超时
 1. 新建module ProviderHystrix-8101
 2. 复制provider-8001的代码和配置文件
@@ -564,7 +563,7 @@ todo
     ```
 7. 通过feign访问地址：`http://localhost:9101/consumerfeign/list`
 
-### 服务降级（Feign+Hystrix）
+## 服务降级（Feign+Hystrix）
 服务降级是在客户端完成的，与服务端无关
 当服务被熔断后，服务将不再被调用，客户端准备一个fallback的回调，返回缺省值
 1. 修改com.xyz.service.DeptService接口，支持fallback
@@ -608,12 +607,12 @@ todo
 4. provider服务手工关闭，验证hystrix熔断
 
 
-### 服务监控HystrixDashBoard
+# 服务监控HystrixDashBoard
 
 
-## Zuul
+> # Zuul
 实现路由+过滤+代理
-* Zuul访问基本配置
+## Zuul访问基本配置
 1. 创建module Zuul-6001
 2. 配置application.yml将Zuul注册到eureka
     ```yaml
@@ -654,7 +653,7 @@ todo
     ```
 3. 通过路由访问`http://localhost:6001/microservice-provider/provider/list`
 
-* Zuul路由访问映射规则(application.yml中增加配置)
+## Zuul路由访问映射规则(application.yml中增加配置)
 1. 对微服务名称增加映射地址`http://loclalhost:6001/mydept/provider/list`
 2. 禁止原微服务地址访问，只能通过映射地址访问
 3. 增加访问前缀`http://localhost:6001/xyz/mydept/provider/list`
@@ -668,9 +667,9 @@ todo
       prefix: /xyz #增加统一的访问前缀
     ```
 
-## Config
-### Config Server
-0. 在github中创建配置文件
+> # Config
+## Config Server
+1. 在github中创建配置文件
     ```yaml
     spring:
       profiles:
@@ -698,8 +697,8 @@ todo
     ```
     重点说明：不允许中在已有的标签下面自定义标签，如：`spring.application.desc`
              单可以从顶级开始自定义标签，如：`my.desc`
-1. 创建module ConfigServer-5001
-2. 新建application.yml,配置git中的配置文件信息
+2. 创建module ConfigServer-5001
+3. 新建application.yml,配置git中的配置文件信息
     ```yaml
     server:
       port: 5001
@@ -713,7 +712,7 @@ todo
               uri: https://github.com/buyimoutianxia/microservicerconfig.git
     ```
  
-3. pom中增加对ConfigServer的jar包支持
+4. pom中增加对ConfigServer的jar包支持
     ```xml
         <dependencies>
     
@@ -732,7 +731,7 @@ todo
     
         </dependencies>
     ``` 
-4. 新建主启动类,开启对配置中心的支持注解@EnableConfigServer
+5. 新建主启动类,开启对配置中心的支持注解@EnableConfigServer
     ```java
     @SpringBootApplication
     @EnableConfigServer
@@ -744,7 +743,7 @@ todo
     }
 
     ```
-5. 启动服务，访问路径获取配置信息`http://localhost:5001/application-dev.yml`或者`http://localhost:5001/application/dev`
+6. 启动服务，访问路径获取配置信息`http://localhost:5001/application-dev.yml`或者`http://localhost:5001/application/dev`
 访问方式如下：
 
 | 序号| 访问路径|
@@ -755,7 +754,7 @@ todo
 |4 |/{application}-{profile}.properties |
 |5 |/{label}/{application}-{profile}.properties |
 
-### Config Client
+## Config Client
 
 1. 新建 module ConfigClient
 2. pom中增加对配置中心client端的jar支持
