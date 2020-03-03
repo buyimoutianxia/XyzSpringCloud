@@ -8,15 +8,11 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 /**
  * @author xyz
  * @date 2020年2月20日
- * @description todo
+ * @description 服务提供者的朱启动类
+ * @EnableEurekaClient注解:eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
  */
 
 @SpringBootApplication
-/**
- * @author xyz
- * @date 2020年2月21日
- * eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
- */
 @EnableEurekaClient
 public class Provider8001 {
 

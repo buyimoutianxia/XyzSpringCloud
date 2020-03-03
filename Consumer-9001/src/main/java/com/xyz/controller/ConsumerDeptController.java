@@ -10,7 +10,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * @author xyz
  * @date 2020年2月20日
- * @description todo
+ * @description 服务消费者的controller层
  */
 @RestController
 public class ConsumerDeptController {

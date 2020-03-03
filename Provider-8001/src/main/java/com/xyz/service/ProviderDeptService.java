@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 /**
  * @author xyz
  * @data 2020年2月20日
- * @decription todo
+ * @decription 服务提供者的service层
  */
 @Service
 public class ProviderDeptService {

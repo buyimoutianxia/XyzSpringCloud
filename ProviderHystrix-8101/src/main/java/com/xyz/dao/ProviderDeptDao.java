@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 /**
  * @author  xyz
  * @data    2020年2月20日
- * @description todo
+ * @description 服务提供者的DAO层
  */
 @Repository
 public class ProviderDeptDao {

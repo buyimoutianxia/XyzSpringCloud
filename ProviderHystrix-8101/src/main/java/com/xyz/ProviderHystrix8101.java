@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 /**
  * @author xyz
  * @date 2020年2月20日
- * @description todo
+ * @description Hystrix版的服务提供者的主启动类
  * @EnableEurekaClient  eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
  * @EnableCircuitBreaker 开启对Hystrix熔断器的支持
  */
