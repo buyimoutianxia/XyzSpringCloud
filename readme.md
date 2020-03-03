@@ -696,7 +696,7 @@ todo
       desc: desc-test
     ```
     重点说明：不允许中在已有的标签下面自定义标签，如：`spring.application.desc`
-             单可以从顶级开始自定义标签，如：`my.desc`
+             但可以从顶级开始自定义标签，如：`my.desc`
 2. 创建module ConfigServer-5001
 3. 新建application.yml,配置git中的配置文件信息
     ```yaml
