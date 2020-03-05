@@ -21,3 +21,10 @@ info:
   app.name: com.xyz.microservice
   build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
   build.version: $project.version$
+
+#暴露hystrix dashboard的全部监控信息
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health","info","hystrix.stream"]
