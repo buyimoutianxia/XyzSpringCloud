@@ -11,6 +11,8 @@ eureka:
     prefer-ip-address: true
 
 
+
+
 spring:
   application:
     name: microservice-consumer
@@ -20,3 +22,8 @@ info:
   app.name: com.xyz.microservice
   build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
   build.version: $project.version$
+
+# 修改ribbon默认算法 spring.application.name + ribbon.NFLoadBalancerRuleClassName
+microservice-consumer:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule

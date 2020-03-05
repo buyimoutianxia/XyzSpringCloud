@@ -149,9 +149,9 @@ public class Provider8001 {
     ```
 ## eureka自我保护机制
 * 某一时刻，某个微服务不可用时，eureka不会立刻清理，依旧会对该微服务的信息进行保存
-* 默认情况下，如果eureka server在一定时间内没有接收到每个微服务实例的心跳，eureka server将会注销该实例。
+* 默认情况下，如果eureka server在一定时间(默认是90s)内,没有接收到每个微服务实例的心跳，eureka server将会注销该实例。
 * 当网络分区故障发生时，微服务与eureka server之间无法正常通信，以上行为可能变得非常危险了，因为微服务本身其实是健康的，此时本不应该注销这个微服务。eureka通过“自我保护模式来解决这个问题”。
-* 在自我保护模式中，eureka server会保护服务注册表中的信息，不再注销任何服务实例。当它收到的心跳数重新恢复到阀值以上时，该eureka server节点就会自动退出自我保护模式。
+* Eureka自我保护机制，默认是15分钟内收到的续约低于原来的85%（默认），就会开启自我保护。这期间Eureka不会剔除其列表中的实例，即使过90s也不会。
 * 禁用自我保护模式
   1. 可以在eureka的server端的application.yml中禁用自我保护
   2. eureka.server.enable-self-preservation=false
@@ -269,6 +269,8 @@ public class Provider8001 {
    ```
 
 4.  consumer的restTemplate bean中增加@LoadBalanced注解
+> RestTemplate是Spring提供的一个访问Http服务的客户端类
+
     ```java
     @Configuration
     public class Config {
@@ -322,6 +324,14 @@ ribbon提供的负载均衡算法
 |ZoneAdvoidaneRule  | |
 
 ## ribbon修改默认算法
+```yaml
+# 修改ribbon默认算法 spring.application.name + ribbon.NFLoadBalancerRuleClassName
+microservice-consumer:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
+```    
+
+## ribbon自定义算法
 在com.xyz.bean.Config中bean
 
 ```java
@@ -335,11 +345,6 @@ ribbon提供的负载均衡算法
         return new RandomRule();
     }
 ```
-
-
-## ribbon自定义算法
-todo
-
 
 > # Feign
 声明式的webservice注解，面向接口开发。feign集成了ribbon
