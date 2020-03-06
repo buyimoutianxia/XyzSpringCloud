@@ -35,3 +35,11 @@ hystrix:
         isolation:
           thread:
             timeoutInMilliseconds: 5000
+
+#暴露hystrix dashboard的全部监控信息
+management:
+  endpoints:
+    web:
+      exposure:
+        include: ["health","info","hystrix.stream"]
+

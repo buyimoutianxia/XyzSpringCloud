@@ -560,7 +560,7 @@ public class Consumer9001 {
 4. 启动注册中心7001、consumer9001，访问`http://localhost:9001/consumer/list`
 
 
-## 服务降级（Feign+Hystrix）
+## Feign+Hystrix
 1. 修改com.xyz.service.DeptService接口，支持fallback
     ```java
     @FeignClient(value = "microservice-provider", fallbackFactory = DeptServcieFallBackFactory.class)
@@ -599,86 +599,32 @@ public class Consumer9001 {
       hystrix:
         enabled: true
     ```
-4. provider服务手工关闭，验证hystrix熔断
+4. 启动注册中心7001、ConsumerFeign9101，验证`http://localhost:9101/consumerfeign/list` 
 
 
-# 服务监控HystrixDashBoard
-1. 在ProviderHystrix项目中改造
-2. pom.xml添加依赖，这3个包必选
+# 熔断监控HystrixDashBoard
+## Ribbon+HystrixDashboard
+1. 使用Consumer9001改造，pom中增加依赖(actuator/hystrix/hystrixdashboard必备)
 ```xml
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
         </dependency>
 ```
-
-3. 主启动类增加对Hystrix dashoard的注解支持
-
+2. 启动类上开启注解@EnableHystrixDashboard
 ```java
-/**
- * @author xyz
- * @date 2020年2月20日
- * @description Hystrix版的服务提供者的主启动类
- * {@link EnableEurekaClient}  eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
- * {@link EnableCircuitBreaker} 开启对Hystrix熔断器的支持
- * {@link EnableHystrixDashboard} 开启对hystrix dashboard的支持
- */
 @SpringBootApplication
 @EnableEurekaClient
 @EnableCircuitBreaker
 @EnableHystrixDashboard
-public class ProviderHystrix8101 {
+public class Consumer9001 {
 
     public static void main(String[] args) {
-        SpringApplication.run(ProviderHystrix8101.class, args);
+        SpringApplication.run(Consumer9001.class, args);
     }
 }
 ```
-
-4. 启动注册中心7001，ProviderHystrix-8101,Consumer9001 3个工程，访问`http://localhost:8101/hystrix`出现dashborad界面
-,输入`http://localhost:8101/hystrix.stream`后，点击"Monitor Stream"按钮，应该出现监控页面
-，但是报错`Unable to connect to Command Metric Stream`，由于**使用springboot2.0 和spring cloud Finchley.M8 版本搭建环境**
-
-> **官方文档**
-```text
-To include the Hystrix Dashboard in your project, use the starter with a group ID of org.springframework.cloud and an artifact ID of spring-cloud-starter-netflix-hystrix-dashboard. See the Spring Cloud Project page for details on setting up your build system with the current Spring Cloud Release Train.
-
-To run the Hystrix Dashboard, annotate your Spring Boot main class with @EnableHystrixDashboard. Then visit /hystrix and point the dashboard to an individual instance’s /hystrix.stream endpoint in a Hystrix client application.
-```
-
-5. 解决dashboard页面提示错误,新建`com.xyz.bean.HystrixDashboardBean`
-```java
-/**
- * @author xyz
- * @date 2020年3月5日
- * @description 解决使用springboot2.0 和spring cloud Finchley.M8 版本搭建的hystrix dashboard页面报错“Unable to connect to Command Metric Stream”
- */
-@Configuration
-public class HystrixDashboardBean {
-
-    @Bean
-    public ServletRegistrationBean getServlet() {
-        HystrixMetricsStreamServlet streamServlet = new HystrixMetricsStreamServlet();
-        ServletRegistrationBean registrationBean = new ServletRegistrationBean(streamServlet);
-        registrationBean.setLoadOnStartup(1);
-        registrationBean.addUrlMappings("/actuator/hystrix.stream");
-        registrationBean.setName("HystrixMetricsStreamServlet");
-        return registrationBean;
-    }
-}
-```
-
-application.yml中增加配置
+3. application中暴露监控信息
 ```yaml
 #暴露hystrix dashboard的全部监控信息
 management:
