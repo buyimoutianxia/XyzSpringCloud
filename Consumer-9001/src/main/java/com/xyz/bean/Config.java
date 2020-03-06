@@ -29,8 +29,8 @@ public class Config {
      * @date 2020年2月23日
      * @decription 修改ribbon默认算法
      */
-    @Bean
-    public IRule myRule() {
-        return new RandomRule();
-    }
+//    @Bean
+//    public IRule myRule() {
+//        return new RandomRule();
+//    }
 }

@@ -1,5 +1,6 @@
 package com.xyz.controller;
 
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.xyz.entity.Dept;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +33,15 @@ public class ConsumerDeptController {
     private RestTemplate restTemplate;
 
     @RequestMapping("/consumer/list")
+    @HystrixCommand(fallbackMethod = "consumerFallback")
     public Dept list() {
         return restTemplate.getForObject(REST_URL_PREFIX + "/provider/list", Dept.class);
+    }
+
+    public Dept consumerFallback() {
+        return new Dept().setDeptNo(9001)
+                         .setDeptName("ribbon-hystrix-name-9001")
+                         .setDeptDesc("ribbon-hystrix-desc-9001");
     }
 
 }

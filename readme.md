@@ -228,7 +228,7 @@ public class Provider8001 {
 客户端 负载均衡工具
 ## Ribbon配置
 1. provider8001复制一份provider8002,使provider的微服务有多个实例（需要注意的是，application.yml中的instance_id需要修改)
-2. comsumer的pom文件中增加配置
+2. comsumer的pom文件中增加对ribbon的支持
     ```yaml
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
@@ -303,9 +303,7 @@ public class Provider8001 {
          */
         private static final String  REST_URL_PREFIX = "http://microservice-provider";
     ```
-7. consumer的请求地址：
-`http://localhost:9001/consumer/list`
-实现consumer请求provider的负载均衡
+7. consumer的请求地址：`http://localhost:9001/consumer/list`实现consumer请求provider的负载均衡
 
 ribbon与eureka整合后，可以直接调用微服务，而不用关心地址和端口
 Ribbon是软负载均衡的客户端组件，可以和其他请求的客户端结合使用，与eureka结合只是其中一个示例
@@ -518,59 +516,51 @@ microservice-consumer:
 扇出  雪崩
 较低级别的服务中的服务故障可能导致用户级联故障。当对特定服务的呼叫达到一定阈值时（Hystrix中的默认值为5秒内的20次故障), Hystrix能够保证在一个依赖故障的情况下，不会导致整体服务失败，避免级联故障，提高分布式系统的弹性
 当某个服务故障之后，通过断路器的故障监控，向调用方返回一个符合预期的、可处理的响应（fallback)，而不是长时间的等待或者抛出方法无法处理的异常，保证服务调用方的线程不会被长时间、不必要的占用，避免了故障在系统中蔓延，乃至雪崩
-
-## 服务熔断
 服务故障或者异常，当某个异常条件被触发，直接熔断整个服务，而不是一直等到此服务超时
-1. 新建module ProviderHystrix-8101
-2. 复制provider-8001的代码和配置文件
-3. 修改com.xyz.controller.ProviderDeptController.list方法
-    ```java
-        /**
-         * @HystrixCommand 调用list方法失败并抛出异常后，会自动调用@HystrixCommand中faccbackMethod指定的方法
-         */
-        @RequestMapping("/provider/list")
-        @HystrixCommand(fallbackMethod = "processHystrix")
-        public Dept list() {
-            /**
-             * return providerDeptService.list();
-             */
-            throw new RuntimeException("没有对应信息");
-        }
-    ```
-4. 配置对应发fallback方法，com.xyz.controller.ProviderDeptController.processHystrix
-    ```java
-        public Dept processHystrix() {
-            return new Dept().setDeptNo(8101)
-                             .setDeptName("providerHystrix_8101")
-                             .setDeptDesc("Hystrix_desc_8101");
-        }
 
-    ```
-5. 修改application.yml配置文件的eureka.instance.instancd_id为MicoroServiceProviderHystrix8101
-6. 主启动类上增加注解@EnableCircuitBreaker
-    ```java
-    /**
-     * @author xyz
-     * @date 2020年2月20日
-     * @description todo
-     * @EnableEurekaClient  eureka client端开启注解，表示本服务启动后会注册到eureka server注册中心中
-     * @EnableCircuitBreaker 开启对Hystrix熔断器的支持
-     */
-    @SpringBootApplication
-    @EnableEurekaClient
-    @EnableCircuitBreaker
-    public class ProviderHystrix8101 {
-    
-        public static void main(String[] args) {
-            SpringApplication.run(ProviderHystrix8101.class, args);
-        }
-    }
-    ```
-7. 通过feign访问地址：`http://localhost:9101/consumerfeign/list`
-
-## 服务降级（Feign+Hystrix）
 服务降级是在客户端完成的，与服务端无关
 当服务被熔断后，服务将不再被调用，客户端准备一个fallback的回调，返回缺省值
+
+##  Ribbon+Hystrix
+1. 使用Consumer9001项目改造，pom中引入依赖文件
+```xml
+        <!--hystrix-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
+```
+2. 配置熔断方法`com.xyz.controller.ConsumerDeptController`
+```java
+    @RequestMapping("/consumer/list")
+    @HystrixCommand(fallbackMethod = "consumerFallback")
+    public Dept list() {
+        return restTemplate.getForObject(REST_URL_PREFIX + "/provider/list", Dept.class);
+    }
+
+    public Dept consumerFallback() {
+        return new Dept().setDeptNo(9001)
+                         .setDeptName("ribbon-hystrix-name-9001")
+                         .setDeptDesc("ribbon-hystrix-desc-9001");
+    }
+
+```
+3. 主启动类开启对Hystrix的支持
+```java
+@SpringBootApplication
+@EnableEurekaClient
+@EnableCircuitBreaker
+public class Consumer9001 {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Consumer9001.class, args);
+    }
+}
+```
+4. 启动注册中心7001、consumer9001，访问`http://localhost:9001/consumer/list`
+
+
+## 服务降级（Feign+Hystrix）
 1. 修改com.xyz.service.DeptService接口，支持fallback
     ```java
     @FeignClient(value = "microservice-provider", fallbackFactory = DeptServcieFallBackFactory.class)
