@@ -669,6 +669,70 @@ management:
         include: "*"
 ```
 
+> # 熔断监控聚合-Turbine
+1. 新建项目turbie-8201
+2. pom中增加依赖
+```xml
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-turbine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-netflix-turbine</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+```
+3. 主启动类增加注解@EnableTurbine开启对Turbine的支持
+```java
+@SpringBootApplication
+@EnableTurbine
+public class TurbineApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(TurbineApplication.class, args);
+    }
+}
+```
+3. application.yml中增加对注册中心和turbine的配置
+```yaml
+spring:
+  application:
+    name: microservice-turbine
+
+server:
+  port: 8201
+
+turbine:
+  aggregator:
+    cluster-config: default # 指定聚合那些集群，多个使用“,"分隔，模式default
+  app-config: microservice-consumer,microservice-consumerfeign  #配置eureka中的serviceID列表，标明监控那些服务
+  cluster-name-expression: new String("default")
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+  instance:
+    instance-id: MicroServiceTurbine
+    prefer-ip-address: true
+
+#解决eureka控制台中的Info页面错误问题
+info:
+  app.name: com.xyz.microservice
+  build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+  build.version: $project.version$
+
+```
+4. 打开HystrixDashboard的启动界面`http://localhost:9001/hystrix`或者`http://localhost:9101/hystrix·
+输入turbine的地址`http://localhost:8201/turbine.stream`
+
+
 > # Zuul
 实现路由+过滤+代理
 ## Zuul访问基本配置
