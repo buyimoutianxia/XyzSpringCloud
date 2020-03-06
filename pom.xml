@@ -22,6 +22,8 @@
         <module>Zuul-6001</module>
         <module>ConfigServer-5001</module>
         <module>ConfigClient-5002</module>
+        <module>Turbine-8201</module>
+        <module>HystrixDashboard-8102</module>
     </modules>
 
     <properties>
@@ -85,6 +87,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.1.5.RELEASE</version>
                 <configuration>
                     <!--如果不增加fork配置，devtools不会生效-->
                     <fork>true</fork>
