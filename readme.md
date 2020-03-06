@@ -602,7 +602,7 @@ public class Consumer9001 {
 4. 启动注册中心7001、ConsumerFeign9101，验证`http://localhost:9101/consumerfeign/list` 
 
 
-# 熔断监控HystrixDashBoard
+> # 熔断监控HystrixDashBoard
 ## Ribbon+HystrixDashboard
 1. 使用Consumer9001改造，pom中增加依赖(actuator/hystrix/hystrixdashboard必备)
 ```xml
@@ -633,7 +633,41 @@ management:
       exposure:
         include: ["health","info","hystrix.stream"]
 ```
+## Feign + HystrixDashboard
+1. 使用ConsumerFeign9101项目改造，pom中引入支持文件
+```xml
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix-dashboard</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+        </dependency>
+```
+2. 修改主配置类，增加@EnableCircuitBreaker和@EnableHystrixDashboard注解
+```java
+@SpringBootApplication
+@EnableEurekaClient
+@EnableFeignClients
+@EnableCircuitBreaker
+@EnableHystrixDashboard
+public class ConsumerFeign9101 {
 
+    public static void main(String[] args) {
+        SpringApplication.run(ConsumerFeign9101.class, args);
+    }
+}
+```
+3. application.yml中暴露actuator全部监控信息
+```yaml
+#暴露hystrix dashboard的全部监控信息
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+```
 
 > # Zuul
 实现路由+过滤+代理
