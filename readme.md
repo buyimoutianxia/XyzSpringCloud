@@ -735,7 +735,7 @@ info:
 
 > # Zuul
 实现路由+过滤+代理
-## Zuul访问基本配置
+## Zuul路由转发实现
 1. 创建module Zuul-6001
 2. 配置application.yml将Zuul注册到eureka
     ```yaml
@@ -791,6 +791,73 @@ zuul:
       path: /mydept/**   #zuul对外提供的映射路径
       serviceId: microservice-provider  #映射对应的微服务名称
 ```
+
+## Zuul请求过滤实现
+1. 在路由转发的基础上实现
+2. 新建`com.xyz.microservice.filter.MyFilter`自定义过滤器
+```java
+@Component
+@Log4j2
+public class MyFilter extends ZuulFilter {
+
+    /**
+     * 指定过滤器的类型，可以是pre/route/post/error
+     * @return String
+     */
+    @Override
+    public String filterType() {
+        return "pre";
+    }
+
+    /**
+     *  指定过滤器的优先级，数据越小，优先级越高
+     * @return int
+     */
+    @Override
+    public int filterOrder() {
+        return 0;
+    }
+
+
+    /**
+     *  判断是否开启此过滤器，true-是，false-否
+     * @return boolean
+     */
+    @Override
+    public boolean shouldFilter() {
+        return true;
+    }
+
+
+    /**
+     * 过滤器的具体逻辑
+     * @return
+     * @throws ZuulException
+     */
+    @Override
+    public Object run() throws ZuulException {
+        RequestContext ctx = RequestContext.getCurrentContext();
+        HttpServletRequest request = ctx.getRequest();
+
+        log.info("send {} request to {}", request.getMethod(), request.getRequestURL().toString());
+        Object accessToken = request.getParameter("accessToken");
+        if( accessToken == null) {
+            log.warn("access token is empty");
+            ctx.setSendZuulResponse(false);
+            ctx.setResponseStatusCode(401);
+            return null;
+        }
+        log.info("access token ok");
+        return null;
+    }
+}
+```
+3. 验证
+* 访问`http://localhost:6001/xyz/mydept/provider/list?accessToken=100` 返回401错误
+* 访问`http://localhost:6001/xyz/mydept/provider/list` 日志显示OK,成功访问到对应的微服务
+
+
+
 
 > # Config
 ## Config Server
