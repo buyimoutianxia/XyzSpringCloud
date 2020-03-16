@@ -24,7 +24,8 @@ zuul:
   prefix: /xyz #统一增加访问前缀
   ignoredServices: "*" #禁止所有的微服务通过zuul的原路径访问`http://localhost:6001/xyz/microservice-provider/provider/list`
   routes:
-    mydept:
+#    microservice-provider: /mydept/** #简化路由配置方法1：如果路由ID与微服务的serviceId一致的话
+    mydept: #路由ID
       path: /mydept/**   #zuul对外提供的映射路径
       serviceId: microservice-provider  #映射对应的微服务名称
 

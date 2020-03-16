@@ -778,14 +778,16 @@ info:
 
 ## Zuul路由访问映射规则(application.yml中增加配置)
 1. 对微服务名称增加对外访问的映射地址`http://loclalhost:6001/mydept/provider/list`
-2. 禁止通过zuul对原微服务地址访问，只能通过映射地址访问
+2. zuul默认的路由规则是：微服务ID+请求路路径的方式`http://localhost:6001/microservice-provider/provider/list`，可以通过设置`zuul.ignoredServices="*"`禁止通过zuul对原微服务地址访问，只能通过映射地址访问
 3. 增加访问前缀`http://localhost:6001/xyz/mydept/provider/list`
+4. 如果路由ID与微服务的serviceId一致的话，可以简化配置
 ```yaml
 zuul:
   prefix: /xyz #统一增加访问前缀
   ignoredServices: "*" #禁止所有的微服务通过zuul的原路径访问`http://localhost:6001/xyz/microservice-provider/provider/list`
   routes:
-    mydept:
+#    microservice-provider: /mydept/** #简化路由配置方法1：如果路由ID与微服务的serviceId一致的话
+    mydept: #路由ID
       path: /mydept/**   #zuul对外提供的映射路径
       serviceId: microservice-provider  #映射对应的微服务名称
 ```
