@@ -735,7 +735,7 @@ info:
 
 > # Zuul
 实现路由+过滤+代理
-## Zuul路由转发实现
+## Zuul面向服务的路由配置
 1. 创建module Zuul-6001
 2. 配置application.yml将Zuul注册到eureka
     ```yaml
