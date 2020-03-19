@@ -170,44 +170,60 @@ public class Provider8001 {
     ```
 3. 在eurekaserver-7001的application.yml中修改
    eureka.instance.hostname和eureka.client.service-url.defaultZone标签
-    ```yaml
-     eureka:
-       instance:
-         hostname: server7001 #eureka服务端的实例名称
-       client:
-         register-with-eureka: false # false表示不向注册中心注册自己
-         fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
-         service-url:
-     #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
-           defaultZone: http://server7002:7002/eureka/,http://server7003:7003/eureka/  #eureka server集群配置
-    ```
+```yaml
+#配置eureka
+eureka:
+  instance:
+    hostname: server7003 #eureka服务端的实例名称
+  client:
+#    register-with-eureka: false # false表示不向注册中心注册自己
+#    fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
+    service-url:
+#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/ #eureka server集群配置
+
+  spring:
+    application:
+      name: eureka-server
+```
  
 4. 在eurekaserver-7002的application.yml中修改
    eureka.instance.hostname和eureka.client.service-url.defaultZone标签
-    ```yaml
-    eureka:
-      instance:
-        hostname: server7002 #eureka服务端的实例名称
-      client:
-        register-with-eureka: false # false表示不向注册中心注册自己
-        fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
-        service-url:
-    #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
-          defaultZone: http://server7001:7001/eureka/,http://server7003:7003/eureka/ #eureka server集群配置
-    ```
+```yaml
+#配置Eureka
+eureka:
+  instance:
+    hostname: server7002 #eureka服务端的实例名称
+  client:
+#    register-with-eureka: false # false表示不向注册中心注册自己
+#    fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
+    service-url:
+#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
+      defaultZone: http://server7001:7001/eureka/,http://server7003:7003/eureka/ #eureka server集群配置
+
+
+spring:
+  application:
+    name: eureka-server
+```
 5. 在eurekaserver-7003的application.yml中修改
    eureka.instance.hostname和eureka.client.service-url.defaultZone标签 
-   ```yaml
-    eureka:
-      instance:
-        hostname: server7003 #eureka服务端的实例名称
-      client:
-        register-with-eureka: false # false表示不向注册中心注册自己
-        fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
-        service-url:
-    #      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
-          defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/ #eureka server集群配置
-   ```
+```yaml
+#配置eureka
+eureka:
+  instance:
+    hostname: server7003 #eureka服务端的实例名称
+  client:
+#    register-with-eureka: false # false表示不向注册中心注册自己
+#    fetch-registry: false # false表示自己端就是注册中心，我的职责是维护服务实例，不需要检索服务
+    service-url:
+#      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # (单机）设置与eureka server交互的查询服务和注册服务的地址
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/ #eureka server集群配置
+
+  spring:
+    application:
+      name: eureka-server
+```
 6. provider8001的application.yml中注册地址改为多个
     eureka.client.service-url.defaultZone标签
     ```yaml
