@@ -797,6 +797,8 @@ info:
 2. zuul默认的路由规则是：微服务ID+请求路路径的方式`http://localhost:6001/microservice-provider/provider/list`，可以通过设置`zuul.ignoredServices="*"`禁止通过zuul对原微服务地址访问，只能通过映射地址访问
 3. 增加访问前缀`http://localhost:6001/xyz/mydept/provider/list`
 4. 如果路由ID与微服务的serviceId一致的话，可以简化配置
+5. 配置不希望被API网关路由的URL表达式
+6. 在API网关上实现本地跳转
 ```yaml
 zuul:
   prefix: /xyz #统一增加访问前缀
@@ -806,6 +808,10 @@ zuul:
     mydept: #路由ID
       path: /mydept/**   #zuul对外提供的映射路径
       serviceId: microservice-provider  #映射对应的微服务名称
+    myforward: #在API网关上实现本地跳转 `http://localhost:6001/xyz/myforward/provider/list?accessToken=1`
+      path: /myforward/**
+      url: forward:/local
+#  ignored-patterns: /**/list  #配置不希望被API网关路由的URL表达式
 ```
 
 ## Zuul请求过滤实现

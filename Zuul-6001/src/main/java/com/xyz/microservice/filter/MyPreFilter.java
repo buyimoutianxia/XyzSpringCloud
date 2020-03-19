@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Component
 @Log4j2
-public class MyFilter extends ZuulFilter {
+public class MyPreFilter extends ZuulFilter {
 
     /**
      * 指定过滤器的类型，可以是pre/route/post/error

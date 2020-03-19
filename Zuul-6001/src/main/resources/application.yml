@@ -28,6 +28,10 @@ zuul:
     mydept: #路由ID
       path: /mydept/**   #zuul对外提供的映射路径
       serviceId: microservice-provider  #映射对应的微服务名称
+    myforward: #在API网关上实现本地跳转 `http://localhost:6001/xyz/myforward/provider/list?accessToken=1`
+      path: /myforward/**
+      url: forward:/local
+#  ignored-patterns: /**/list  #配置不希望被API网关路由的URL表达式
 
 #Zuul不使用微服务信息（不再注册中心中注册），也可以实现负载均衡，类似nginx的功能，采用path和url的映射方式
 #zuul:
