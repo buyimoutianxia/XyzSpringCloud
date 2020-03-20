@@ -48,6 +48,7 @@ public class MyPostFilterException extends ZuulFilter {
     }
 
     private void myPostFilterException() {
-        throw new RuntimeException("My PostFilter Exception");
+//        throw new RuntimeException("My PostFilter Exception");
+        log.info("Post Filter do something...");
     }
 }

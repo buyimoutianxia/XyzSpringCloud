@@ -3,7 +3,8 @@ server:
 
 eureka:
   instance:
-    instance-id: Zuul-6001
+#    instance-id: Zuul-6001
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}
     prefer-ip-address: true
   client:
     service-url:
@@ -32,6 +33,24 @@ zuul:
       path: /myforward/**
       url: forward:/local
 #  ignored-patterns: /**/list  #配置不希望被API网关路由的URL表达式
+  MyPreFilter:
+    pre:
+      disable: true #禁用单个过滤器
+  MyPreFilterException:
+    pre:
+      disable: true
+  MyRouteFilterException:
+    route:
+      disable: true
+  MyPostFilterException:
+    post:
+      disable: true
+  retryable: true  #是否开始重试
+
+ribbon:
+  MaxAutoRetries: 3 #对当前服务的重试次数
+  MaxAutoRetriesNextServer: 0 #切换相同server的次数
+
 
 #Zuul不使用微服务信息（不再注册中心中注册），也可以实现负载均衡，类似nginx的功能，采用path和url的映射方式
 #zuul:
