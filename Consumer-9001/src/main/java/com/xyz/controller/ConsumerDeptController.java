@@ -2,6 +2,7 @@ package com.xyz.controller;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.xyz.entity.Dept;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
  * @description 服务消费者的controller层
  */
 @RestController
+@Log4j2
 public class ConsumerDeptController {
 
 //    private static final String  REST_URL_PREFIX = "http://localhost:8001";
@@ -35,6 +37,7 @@ public class ConsumerDeptController {
     @RequestMapping("/consumer/list")
     @HystrixCommand(fallbackMethod = "consumerFallback")
     public Dept list() {
+        log.info("consumer 9001 ...");
         return restTemplate.getForObject(REST_URL_PREFIX + "/provider/list", Dept.class);
     }
 

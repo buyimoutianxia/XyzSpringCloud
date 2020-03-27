@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: microservice-provider   #微服务名称
+  zipkin:
+    base-url: http://localhost:8500
 
 
 #eureka注册信息

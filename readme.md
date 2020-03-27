@@ -1041,3 +1041,83 @@ public class MyFilter extends ZuulFilter {
    test访问路径:`http://localhost:9999/config/client`
 
 7. 项目只有在启动的时候才会获取配置文件的值，修改github信息后，client端并没有在次去获取
+
+> # 服务链路(sleuth+zipkin)
+通常一个由客户端发起的请求，在后端系统中经过多个微服务调用来协同产生最后的结果，依赖的其中任何一个服务出现超时或者错误都会导致结果错误。
+全链路跟踪可以获取请求的路径中每个微服务调用信息，帮助用户快速发现错误和分析链路中的性能瓶颈。
+
+
+## 服务链路配置
+1. 创建module-Zipkin Server
+*  pom中增加依赖
+```xml
+       <dependency>
+            <groupId>io.zipkin.java</groupId>
+            <artifactId>zipkin-server</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.zipkin.java</groupId>
+            <artifactId>zipkin-autoconfigure-ui</artifactId>
+            <version>2.11.9</version>
+        </dependency>
+```
+* 配置aplication.yml文件
+```yaml
+server:
+  port: 8500
+
+spring:
+  application:
+    name: zipkin-server
+
+management:
+  metrics:
+    web:
+      server:
+        auto-time-requests=false:
+```
+* 启动类开启对zipkin server的注解
+```java
+@SpringBootApplication
+@EnableZipkinServer
+public class ZipkinServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ZipkinServerApplication.class, args);
+    }
+}
+```
+* 通过浏览器访问zipkin server`http://localhost:8500/zipkin/`
+
+2. 改造consumer9001的项目对服务链路的跟踪
+* pom文件增加依赖
+```xml
+     <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-zipkin</artifactId>
+        </dependency
+```
+* application.yml增加zipkin server的地址
+```yaml
+spring:
+  zipkin:
+    base-url: http://localhost:8500
+```
+* 为了方便查看链路日志，可以在controller中增加日志
+```java
+log.info("consumer 9001 ...");
+```
+
+3. 改造provider8001,步骤与consumer9001相同
+4. 其中注册中心、consumer9001、provider8001、Zipkinserver8500 项目，访问`http://localhost:9001/consumer/list`
+5. 访问`http://localhost:8500/zipkin/`观察调用链路信息
+
+
+

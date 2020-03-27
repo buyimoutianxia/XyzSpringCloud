@@ -16,6 +16,8 @@ eureka:
 spring:
   application:
     name: microservice-consumer
+  zipkin:
+    base-url: http://localhost:8500
 
 #解决eureka控制台中的Info页面错误问题
 info:

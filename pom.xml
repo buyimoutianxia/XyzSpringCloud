@@ -22,6 +22,7 @@
         <module>ConfigServer-5001</module>
         <module>ConfigClient-5002</module>
         <module>Turbine-8201</module>
+        <module>ZipkinServer8500</module>
     </modules>
 
     <properties>
