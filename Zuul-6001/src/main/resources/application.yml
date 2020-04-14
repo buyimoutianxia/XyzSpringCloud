@@ -33,6 +33,7 @@ zuul:
       path: /myforward/**
       url: forward:/local
 #  ignored-patterns: /**/list  #配置不希望被API网关路由的URL表达式
+#禁用过滤器
   MyPreFilter:
     pre:
       disable: true #禁用单个过滤器

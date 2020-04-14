@@ -1,0 +1,40 @@
+server:
+  port: 6101
+
+
+spring:
+  application:
+    name: microservice-gateway
+  cloud:
+    gateway:
+      routes: #设置路由：路由id、路由打微服务的uri、断言
+      - id: microservice-provider #路由ID，全局唯一
+#        uri: http://127.0.0.1:8001 #目标微服务的请求地址和端口
+        uri: lb://microservice-provider  # lb://微服务名 根据微服务名称从注册中心获取地址
+        predicates:
+        - Path=/product/**  #路由条件，采用path路由规则
+        filters:  # 实现重写转发路径： http://localhost:6101/product/provider/list --> http://localhost:6101/provider/list
+        - RewritePath=/product/(?<segment>.*), /$\{segment}
+      discovery:
+        locator:
+          enabled: true  #开启通过微服务名称默认进行转发规则：如http://localhost:6101/microservice-provider/provider/list
+          lower-case-service-id: true  #微服务名称通过小写的方式请求
+
+##eureka配置信息
+eureka:
+  client:
+    service-url:  #注册中心地址列表
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+  instance:
+    instance-id: microservice-gateway6101  # 自定义控制台中微服务名称
+    prefer-ip-address: true  #eureka控制访问路径显示ip
+
+#解决eureka控制台中的Info页面错误问题
+info:
+  app.name: com.xyz.microservice
+  build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+  build.version: $project.version$
+
+logging:
+  level:
+    root: debug

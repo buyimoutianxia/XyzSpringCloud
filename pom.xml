@@ -23,6 +23,7 @@
         <module>ConfigClient-5002</module>
         <module>Turbine-8201</module>
         <module>ZipkinServer8500</module>
+        <module>Gateway-6101</module>
     </modules>
 
     <properties>
