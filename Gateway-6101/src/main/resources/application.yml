@@ -5,6 +5,10 @@ server:
 spring:
   application:
     name: microservice-gateway
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
   cloud:
     gateway:
       routes: #设置路由：路由id、路由打微服务的uri、断言
@@ -15,10 +19,16 @@ spring:
         - Path=/product/**  #路由条件，采用path路由规则
         filters:  # 实现重写转发路径： http://localhost:6101/product/provider/list --> http://localhost:6101/provider/list
         - RewritePath=/product/(?<segment>.*), /$\{segment}
-      discovery:
-        locator:
-          enabled: true  #开启通过微服务名称默认进行转发规则：如http://localhost:6101/microservice-provider/provider/list
-          lower-case-service-id: true  #微服务名称通过小写的方式请求
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenishRate: 1 #令牌桶每秒放入速率
+            redis-rate-limiter.burstCapacity: 3  #令牌桶的上限
+#            key-resolver: "#{@pathKeyResolver}"  #基于请求路径的限流解析
+            key-resolver: "#{@userKeyResolver}" #基于请求参数的限流解析
+#      discovery:
+#        locator:
+#          enabled: true  #开启通过微服务名称默认进行转发规则：如http://localhost:6101/microservice-provider/provider/list
+#          lower-case-service-id: true  #微服务名称通过小写的方式请求
 
 ##eureka配置信息
 eureka:
@@ -35,6 +45,3 @@ info:
   build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
   build.version: $project.version$
 
-logging:
-  level:
-    root: debug
