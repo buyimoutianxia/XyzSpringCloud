@@ -2,6 +2,7 @@ server:
     port: 9001
 
 
+#配置eureka
 eureka:
   client:
     service-url:
@@ -17,7 +18,12 @@ spring:
   application:
     name: microservice-consumer
   zipkin:
-    base-url: http://localhost:8500
+    base-url: http://localhost:8500  # zipkin server地址和端口
+    sender:
+      type: web  #zipkin消息传送发送方式，采用Http协议
+  sleuth:
+    sampler:
+      probability: 1 # sleuth配置采样比，默认是0.1
 
 #解决eureka控制台中的Info页面错误问题
 info:

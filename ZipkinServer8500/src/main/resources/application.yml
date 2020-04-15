@@ -5,8 +5,8 @@ spring:
   application:
     name: zipkin-server
 
-management:
-  metrics:
-    web:
-      server:
-        auto-time-requests=false:
+#management:
+#  metrics:
+#    web:
+#      server:
+#        auto-time-requests=false

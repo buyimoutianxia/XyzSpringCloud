@@ -8,6 +8,7 @@ import zipkin2.server.internal.EnableZipkinServer;
  * @author xyz
  * @date 2020年3月26日
  * @description ZipkinServer 主启动类
+ * {@link EnableZipkinServer} 开启zipkin server注解
  */
 @SpringBootApplication
 @EnableZipkinServer

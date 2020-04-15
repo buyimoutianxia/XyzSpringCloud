@@ -5,7 +5,13 @@ spring:
   application:
     name: microservice-provider   #微服务名称
   zipkin:
-    base-url: http://localhost:8500
+    base-url: http://localhost:8500  # zipkin server地址和端口
+    sender:
+      type: web  #消息传送发送方式，采用Http协议
+  sleuth:
+    sampler:
+      probability: 1 # 配置采样比，默认是0.1
+
 
 
 #eureka注册信息
