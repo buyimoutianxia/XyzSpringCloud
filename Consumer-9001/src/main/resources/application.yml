@@ -17,13 +17,28 @@ eureka:
 spring:
   application:
     name: microservice-consumer
+    #修改zipkin使用rabbitmq采集数据
   zipkin:
-    base-url: http://localhost:9411  # zipkin server地址和端口
+#    base-url: http://localhost:9411  # zipkin server地址和端口
     sender:
-      type: web  #zipkin消息传送发送方式，采用Http协议
+      type: rabbit # 向rabbit中发送消息
+  #      type: web  #zipkin消息传送发送方式，采用Http协议:
   sleuth:
     sampler:
       probability: 1 # sleuth配置采样比，默认是0.1
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    listener: #重试策略
+      direct:
+        retry:
+          enabled: true
+      simple:
+        retry:
+          enabled: true
+
 
 #解决eureka控制台中的Info页面错误问题
 info:

@@ -4,13 +4,27 @@ server:
 spring:
   application:
     name: microservice-provider   #微服务名称
+    #修改zipkin使用rabbitmq采集数据
   zipkin:
-    base-url: http://localhost:9411 # zipkin server地址和端口
+    #    base-url: http://localhost:9411  # zipkin server地址和端口
     sender:
-      type: web  #消息传送发送方式，采用Http协议
+      type: rabbit # 向rabbit中发送消息
+  #      type: web  #zipkin消息传送发送方式，采用Http协议:
   sleuth:
     sampler:
-      probability: 1 # 配置采样比，默认是0.1
+      probability: 1 # sleuth配置采样比，默认是0.1
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+    listener: #重试策略
+      direct:
+        retry:
+          enabled: true
+      simple:
+        retry:
+          enabled: true
 
 
 
