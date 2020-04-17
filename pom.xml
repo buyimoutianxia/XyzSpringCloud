@@ -22,8 +22,9 @@
         <module>ConfigServer-5001</module>
         <module>ConfigClient-5002</module>
         <module>Turbine-8201</module>
-        <module>ZipkinServer8500</module>
         <module>Gateway-6101</module>
+        <module>StreamProducer-8500</module>
+        <module>StreamConsumer-8501</module>
     </modules>
 
     <properties>
