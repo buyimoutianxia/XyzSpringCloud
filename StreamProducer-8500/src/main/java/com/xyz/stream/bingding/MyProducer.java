@@ -1,7 +1,6 @@
 package com.xyz.stream.bingding;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.integration.support.MessageBuilder;
@@ -14,14 +13,13 @@ import org.springframework.messaging.MessageChannel;
  */
 
 @EnableBinding(Source.class)
-public class MyProducer implements CommandLineRunner {
+public class MyProducer {
 
     @Autowired
     private MessageChannel output;
 
-
-    @Override
-    public void run(String... args) throws Exception {
-        output.send(MessageBuilder.withPayload("hello, my friend ...").build());
+    public void send(Object messsage) {
+        output.send(MessageBuilder.withPayload(messsage).build());
     }
+
 }
