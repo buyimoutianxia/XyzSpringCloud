@@ -1,8 +1,8 @@
 package com.xyz.stream.binding;
 
+import com.xyz.stream.channel.MyProcess;
 import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.cloud.stream.messaging.Sink;
 
 /**
  * @author xyz
@@ -10,10 +10,10 @@ import org.springframework.cloud.stream.messaging.Sink;
  * @decription 消息接收
  */
 
-@EnableBinding(Sink.class)
+@EnableBinding(MyProcess.class)
 public class MyConsumer {
 
-    @StreamListener(Sink.INPUT)
+    @StreamListener(MyProcess.MYINPUT)
     public void input(String message) {
         System.out.println("接收的消息：" + message);
     }

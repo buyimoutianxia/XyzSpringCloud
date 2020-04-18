@@ -14,6 +14,8 @@ spring:
       bindings:  #stream channel
         input:
           destination: test-producer #消息接收队列名称
+        myinput:
+          destination: costom-topic #消息接收队列名称
       binders:  #绑定器
         defaultRabbit:
           type: rabbit

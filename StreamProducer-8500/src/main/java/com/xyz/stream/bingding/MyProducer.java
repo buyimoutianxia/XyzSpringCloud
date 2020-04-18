@@ -1,8 +1,8 @@
 package com.xyz.stream.bingding;
 
+import com.xyz.stream.channel.MyProcess;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.messaging.MessageChannel;
 
@@ -12,14 +12,14 @@ import org.springframework.messaging.MessageChannel;
  * @decription 模拟消息发送
  */
 
-@EnableBinding(Source.class)
+@EnableBinding(MyProcess.class)
 public class MyProducer {
 
     @Autowired
-    private MessageChannel output;
+    private MessageChannel myoutput;
 
     public void send(Object messsage) {
-        output.send(MessageBuilder.withPayload(messsage).build());
+        myoutput.send(MessageBuilder.withPayload(messsage).build());
     }
 
 }
