@@ -25,6 +25,7 @@
         <module>Gateway-6101</module>
         <module>StreamProducer-8500</module>
         <module>StreamConsumer-8501</module>
+        <module>StreamConsumer-8502</module>
     </modules>
 
     <properties>

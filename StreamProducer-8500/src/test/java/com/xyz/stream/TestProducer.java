@@ -22,7 +22,11 @@ public class TestProducer {
 
     @Test
     public void test() {
-        myProducer.send("test method ...");
+        for (int i = 0; i < 5; i++) {
+
+            myProducer.send(i);
+
+        }
     }
 
 }

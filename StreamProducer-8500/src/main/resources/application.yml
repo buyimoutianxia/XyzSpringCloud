@@ -16,7 +16,9 @@ spring:
           destination: test-producer #消息发送的目的地，在rabbitmq中指的是exchange
         myoutput:
           destination: costom-topic #消息发送的目的地，在rabbitmq中指的是exchange
-
+          producer:
+            partitionKeyExpression: payload #分区关键字
+            partitionCount: 2 #分区总数量
       binders:  #绑定器
         defaultRabbit:
           type: rabbit

@@ -1,9 +1,9 @@
 server:
-  port: 8501
+  port: 8502
 
 spring:
   application:
-    name: streamconsumer-8501
+    name: streamconsumer-8502
   rabbitmq:  #rabbiqmq连接信息
     host: localhost
     port: 5672
@@ -22,5 +22,5 @@ spring:
       binders:  #绑定器
         defaultRabbit:
           type: rabbit
-      instanceIndex: 0
+      instanceIndex: 1
       instanceCount: 2

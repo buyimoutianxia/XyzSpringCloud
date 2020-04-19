@@ -7,8 +7,8 @@ import org.springframework.messaging.SubscribableChannel;
 
 /**
  * @author xyz
- * @date 2020-04-17-23:01
- * @decription 自定义消息channel
+ * @date 2020-04-19-10:29
+ * @decription todo
  */
 public interface MyProcess {
 
@@ -31,3 +31,4 @@ public interface MyProcess {
     @Input("myinput")
     SubscribableChannel myinput();
 }
+
