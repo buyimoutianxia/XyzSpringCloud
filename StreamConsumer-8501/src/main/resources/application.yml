@@ -16,6 +16,7 @@ spring:
           destination: test-producer #消息接收队列名称
         myinput:
           destination: costom-topic #消息接收队列名称
+          group: mygroup #设置消费者组
       binders:  #绑定器
         defaultRabbit:
           type: rabbit
