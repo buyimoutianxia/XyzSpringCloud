@@ -5,3 +5,12 @@ spring:
       profile: test #访问的配置项
       label: master  #访问的分支
       uri: http://localhost:5001   #SpringCloud Config Server端的地址
+
+
+#开启actuator的refresh点
+management:
+  endpoint:
+  endpoints:
+    web:
+      exposure:
+        include: refresh

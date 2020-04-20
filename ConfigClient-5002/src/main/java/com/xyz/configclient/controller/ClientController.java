@@ -1,6 +1,7 @@
 package com.xyz.configclient.controller;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -8,9 +9,11 @@ import org.springframework.web.bind.annotation.RestController;
  * @author xyz
  * @date    2020年2月28日
  * @description 通过@value注解获取配置中心的配置信息，通过rest的方式展示给浏览器
+ * {@link RefreshScope}实现手动刷新
  */
 
 @RestController
+@RefreshScope
 public class ClientController {
 
     @Value("${server.port}")
