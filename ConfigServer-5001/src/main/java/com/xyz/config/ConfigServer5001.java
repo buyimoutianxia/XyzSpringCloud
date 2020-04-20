@@ -8,6 +8,7 @@ import org.springframework.cloud.config.server.EnableConfigServer;
  * @author xyz
  * @date 2020年2月28日
  * @description SpringCloud Config 配置中心服务端主启动类
+ * {@link EnableConfigServer} 开启对Config Server的注解支持
  */
 
 @SpringBootApplication

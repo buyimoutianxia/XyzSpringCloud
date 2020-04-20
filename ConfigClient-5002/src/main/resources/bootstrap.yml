@@ -4,8 +4,10 @@ spring:
       name: application   #从github上获取的资源名称，没有yml后缀
       profile: test #访问的配置项
       label: master  #访问的分支
-      uri: http://localhost:5001   #SpringCloud Config Server端的地址
-
+      discovery: # 开启通过微服务名称获取Config Server的信息
+        enabled: true
+        service-id: microserver-config
+#      uri: http://localhost:5001   #SpringCloud Config Server端的地址
 
 #开启actuator的refresh点
 management:
@@ -13,4 +15,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh
+        include: ["refresh","info"]
+
+#配置eureka
+eureka:
+  client:
+    service-url:
+      defaultZone: http://server7001:7001/eureka/,http://server7002:7002/eureka/,http://server7003:7003/eureka/
+  instance:
+    instance-id: configclient
+    prefer-ip-address: true
+
+#解决eureka控制台中的Info页面错误问题
+info:
+  app.name: com.xyz.microservice
+  build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
+  build.version: $project.version$
+
