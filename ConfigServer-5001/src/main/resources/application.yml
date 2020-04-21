@@ -8,6 +8,13 @@ spring:
       server:
         git:
           uri: https://github.com/buyimoutianxia/microservicerconfig.git
+  rabbitmq:  #rabbitmq配置
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
+
+
 
 #配置eureka
 eureka:
@@ -23,3 +30,11 @@ info:
   app.name: com.xyz.microservice
   build.artifactId: $project.artifactId$ #使用maven内置变量project.artifactId和project.version完成对变量的赋值
   build.version: $project.version$
+
+#actuator暴露点
+management:
+  endpoint:
+  endpoints:
+    web:
+      exposure:
+        include: "bus-refresh"

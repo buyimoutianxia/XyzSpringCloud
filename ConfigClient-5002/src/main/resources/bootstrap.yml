@@ -8,14 +8,19 @@ spring:
         enabled: true
         service-id: microserver-config
 #      uri: http://localhost:5001   #SpringCloud Config Server端的地址
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: admin
+    password: admin
 
 #开启actuator的refresh点
-management:
-  endpoint:
-  endpoints:
-    web:
-      exposure:
-        include: ["refresh","info"]
+#management:
+#  endpoint:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: ["refresh","info"]
 
 #配置eureka
 eureka:
